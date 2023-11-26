@@ -4,36 +4,23 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Pengaduan;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class PengaduanController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index()
     {
-        $pengaduans =Pengaduan::latest()->get();
+        if(Auth::user()->role != 0) $pengaduans = Pengaduan::latest()->get();
+        else $pengaduans = Pengaduan::where('user_id',Auth::user()->id)->latest()->get();
+        
         return view('pengaduan.index',compact('pengaduans'));
     }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
         return view('pengaduan.create');
     }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         $this->validate($request, [
@@ -45,7 +32,7 @@ class PengaduanController extends Controller
 
         $foto = $request->file('foto');
         $name = time().'.'.$foto->getClientOriginalExtension();
-        $destinationPath = public_path('/foto');
+        $destinationPath = public_path('/image');
         $foto->move ($destinationPath, $name);
 
         Pengaduan::create([
@@ -103,7 +90,7 @@ class PengaduanController extends Controller
         if($request->hasFile('foto')){
             $foto = $request->file('foto');
             $name = time().'.'.$foto->getClientOriginalExtension();
-            $destinationPath = public_path('/foto');
+            $destinationPath = public_path('/image');
             $foto->move($destinationPath, $name);
         }
 
@@ -113,7 +100,7 @@ class PengaduanController extends Controller
         $pengaduan->foto = $name;
         $pengaduan->save();
 
-        return redirect()->route("pengaduan.index")->with(["message"=>"pengaduan berhasil dikirim!"]);
+        return redirect()->route("pengaduan.index")->with(["message"=>"pengaduan berhasil diubah!"]);
     }
 
     /**
@@ -129,5 +116,20 @@ class PengaduanController extends Controller
         return redirect()->back()->with('message','Pengaduan berhasil dihapus');
     }
     
-    
+    public function laporan()
+    {
+        $pengaduans =Pengaduan::latest()->get();
+        return view('pengaduan.laporan',compact('pengaduans'));
+    }
+    public function pdf()
+    {
+        $pengaduans = Pengaduan::latest()->get();
+        $pdf = \PDF::loadview('pengaduan.pdf',compact('pengaduans'));
+        return $pdf->download("Pengaduan.pdf");
+    }
+    public function getUsers()
+    { 
+        $users = User::latest()->get();
+        return view('user.index',compact('users'));
+    }
 }

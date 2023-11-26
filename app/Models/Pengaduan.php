@@ -13,13 +13,11 @@ class Pengaduan extends Model
     {
         return $this->belongsTo(User::class);
     }
+    
     public function tanggapan(){
         return $this->hasOne(Tanggapan::class);
     }
-    public function show($id){
-        $pengaduan = Pengaduan::find($id);
-        return view('pengaduan.detail', compact('pengaduan'));
-    }
+
     protected $fillable = [
         'tgl_pengaduan',
         'user_id',

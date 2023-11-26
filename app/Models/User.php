@@ -19,7 +19,7 @@ class User extends Authenticatable
      */
     public function pengaduan()
     {
-        return $this->belongsTo(Pengaduan::class);
+        return $this->hasMany(Pengaduan::class);
     }
      protected $fillable = [
         'name',
@@ -48,4 +48,5 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+    
 }

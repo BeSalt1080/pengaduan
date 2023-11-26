@@ -14,28 +14,34 @@
                 <div class="card-body">
                     <div class="form-group">
                         Nama Pelapor : <b>{{$pengaduan->user->name}}</b><br>
-                        NIK : <b>{{$pengaduan->user->nik}}</b><br> 
+                        NIK : <b>{{$pengaduan->user->nik}}</b><br>
                         Tanggal Pengaduan : <b>{{ $pengaduan->tgl_pengaduan}}</b><br>
                         Status: <b>{{ $pengaduan->status}}</b><br>
                         Isi pengaudan :<b>{{ $pengaduan->isi_laporan}}</b><br>
-                        Foto :<br><img src="{{asset('foto')}}/{{$pengaduan->foto}}" width="50%">
+                        Foto :<br><img src="{{asset('image')}}/{{$pengaduan->foto}}" width="50%">
                     </div>
                     <div class="form-group">
                         Tanggapan:
+
                         @if(empty($pengaduan->tanggapan->tanggapan))
-                        <div class="form-group">
-                            <a href="{{route('tanggapan.show',[$pengaduan->id])}}">
-                                <button class="btn btn-primary">Beri Tanggapan</i></button>
-                            </a>
-                        </div>
+                        Belum ada tanggapan
+                            @if(Auth::user()->role != 0)
+                            <div class="form-group">
+                                <a href="{{route('tanggapan.show',[$pengaduan->id])}}"
+                                    <button class="btn btn-primary">Beri Tanggapan</i></button>
+                                </a>
+                            </div>
+                            @endif
                         @else
-                        <div class="form-group">
-                            <a href="{{route('tanggapan.edit', [$pengaduan->id])}}">
-                                <button class="btn btn-primary">Update Tanggapan</i></button>
-                            </a>
-                        </div>
+                        {{$pengaduan->tanggapan->tanggapan}}
+                            @if(Auth::user()->role != 0)
+                            <div class="form-group">
+                                <a href="{{route('tanggapan.edit', [$pengaduan->tanggapan->id])}}">
+                                    <button class="btn btn-primary">Update Tanggapan</i></button>
+                                </a>
+                            </div>
+                            @endif
                         @endif
-                        
                     </div>
                 </div>
             </div>

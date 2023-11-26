@@ -18,12 +18,15 @@ use App\Http\Controllers\TanggapanController;
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('welcome');
 
 Auth::routes();
 
-Route::resource('pengaduan',PengaduanController::class);
+Route::resource('pengaduan',PengaduanController::class)->middleware('auth');
 Route::resource('tanggapan',TanggapanController::class)->except(['index'])->middleware('auth');
+Route::get('/cetak', [PengaduanController::class, 'pdf'])->middleware('auth')->name('pengaduan.cetak');
+Route::get('/laporan', [PengaduanController::class, 'laporan'])->middleware('auth')->name('pengaduan.laporan');
+Route::get('/user', [PengaduanController::class, 'getUsers'])->middleware('auth')->name('pengaduan.user');
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->middleware('auth')->name('home');
 
